@@ -48,27 +48,6 @@ spec:
       secretName: {{ .Values.app.ingress.secretName }}
   {{- end }}
   rules:
-    {{- if .Values.app.ingress.hosts }}
-    {{- range $host := .Values.app.ingress.hosts }}
-    - host: {{ $host }}
-      http:
-        paths:
-          - path: {{ $.Values.app.ingress.paths.web }}
-            pathType: {{ $.Values.app.ingress.pathType }}
-            backend:
-              service:
-                name: {{ template "kubernetes-dashboard.fullname" $ }}-{{ $.Values.web.role }}
-                port:
-                  name: {{ $.Values.web.role }}
-          - path: {{ $.Values.app.ingress.paths.api }}
-            pathType: {{ $.Values.app.ingress.pathType }}
-            backend:
-              service:
-                name: {{ template "kubernetes-dashboard.fullname" $ }}-{{ $.Values.api.role }}
-                port:
-                  name: {{ $.Values.api.role }}
-    {{- end }}
-    {{- else }}
     - http:
         paths:
           - path: {{ .Values.app.ingress.paths.web }}
@@ -85,5 +64,4 @@ spec:
                 name: {{ template "kubernetes-dashboard.fullname" $ }}-{{ .Values.api.role }}
                 port:
                   name: {{ .Values.api.role }}
-    {{- end }}
 {{- end }}
