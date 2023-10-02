@@ -43,7 +43,31 @@ spec:
             initialDelaySeconds: {{ .Values.probe.initialDelaySeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if not (contains "affine.pro" .Values.global.ingress.host) }}
+          volumeMounts:
+          - name: appdir
+            mountPath: /app
+      initContainers:
+        - name: init-replace-host
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: [
+            "sh",
+            "-c",
+            {{ printf "%s%s%s"
+            "sed -i s/app.affine.pro/"
+            (quote .Values.global.ingress.host)
+            "/g /app/dist/index.html /app/dist/*/index.html /app/dist/js/*.js* && cp -a /app/dist /work/"
+            | quote }}
+          ]
+          # File list from `grep -ERo ".{0,10}app.affine.pro" /app`
+          volumeMounts:
+          - name: appdir
+            mountPath: /work
+      {{- end }}
       {{- with .Values.nodeSelector }}
+      volumes:
+      - name: appdir
+        emptyDir: {}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
