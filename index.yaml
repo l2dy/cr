@@ -48,4 +48,15 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/kubernetes-dashboard-7.0.0-alpha1.1/kubernetes-dashboard-7.0.0-alpha1.1.tgz
     version: 7.0.0-alpha1.1
-generated: "2023-10-02T01:45:33.584423741Z"
+  pgbouncer:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2023-10-02T03:19:58.216069484Z"
+    description: PgBouncer chart
+    digest: 5516264da9c12e5b42a9b96400cd9a963ade3bcd208ab272c630e56eab58a8a8
+    home: https://github.com/cradlepoint/kubernetes-helm-chart-pgbouncer
+    name: pgbouncer
+    urls:
+    - https://github.com/l2dy/cr/releases/download/pgbouncer-1.0.16-alpha.0/pgbouncer-1.0.16-alpha.0.tgz
+    version: 1.0.16-alpha.0
+generated: "2023-10-02T03:19:58.216076384Z"
