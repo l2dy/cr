@@ -21,6 +21,7 @@ image:
 
 imagePullSecrets: []
 
+portProbeDatabaseName: postgres
 databases: {}
 #  name:
 #    host: host

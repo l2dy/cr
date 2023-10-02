@@ -83,6 +83,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: POSTGRESQL_HOST
+              value: {{with get .Values.databases .Values.portProbeDatabaseName}}{{quote .host}}{{end}}
+            - name: POSTGRESQL_PORT
+              value: {{with get .Values.databases .Values.portProbeDatabaseName}}{{quote .port}}{{end}}
             - name: POSTGRESQL_PASSWORD
               value: "placeholder"
           ports:
