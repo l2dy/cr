@@ -38,7 +38,7 @@ unix_socket_dir = var/run/postgresql
 ;client_tls_ecdhcurve = auto
 ;server_tls_sslmode = disable
 {{- if $root.Values.customCA }}
-server_tls_ca_file = /etc/pgbouncer/server-ca-certificates.crt
+server_tls_ca_file = /opt/bitnami/pgbouncer/conf/server-ca-certificates.crt
 {{- else }}
 ;server_tls_ca_file = <system default>
 {{- end }}
@@ -52,7 +52,7 @@ server_tls_ca_file = /etc/pgbouncer/server-ca-certificates.crt
 
 auth_type = {{ .Values.settings.auth_type }}
 ;auth_file = /8.0/main/global/pg_auth
-auth_file = /etc/pgbouncer.d/userlist.txt
+auth_file = /opt/bitnami/pgbouncer/conf.d/userlist.txt
 ;auth_hba_file =
 
 {{ .Values.settings.auth_query }}
@@ -131,7 +131,7 @@ tcp_keepintvl = 30
 ;conffile
 ;service_name = pgbouncer
 ;job_name = pgbouncer
-;%include /etc/pgbouncer/pgbouncer-other.ini
+;%include /opt/bitnami/pgbouncer/conf/pgbouncer-other.ini
 
 ;;; Custom attributes added from .Values.customSettings
 {{- range $k, $v := .Values.customSettings }}

@@ -15,8 +15,8 @@ budget:
   minAvailable: 0
 
 image:
-  repository: cradlepoint/pgbouncer
-  tag: 1.0.1
+  repository: bitnami/pgbouncer
+  tag: 1.20.1
   pullPolicy: Always
 
 imagePullSecrets: []
