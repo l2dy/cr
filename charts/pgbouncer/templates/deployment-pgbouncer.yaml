@@ -82,6 +82,9 @@ spec:
         - name: pgbouncer
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POSTGRESQL_PASSWORD
+              value: "placeholder"
           ports:
             - name: pgbouncer
               containerPort: {{ .Values.internalPort }}
