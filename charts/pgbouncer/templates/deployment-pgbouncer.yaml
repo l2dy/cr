@@ -101,10 +101,10 @@ spec:
                 command: ["/bin/sh","-c","sleep 5"]
           volumeMounts:
             - name: userssecret
-              mountPath: /opt/bitnami/pgbouncer/conf.d
+              mountPath: /bitnami/pgbouncer/conf.d
               readOnly: true
             - name: config
-              mountPath: /opt/bitnami/pgbouncer/conf
+              mountPath: /bitnami/pgbouncer/conf
               readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
