@@ -46,7 +46,7 @@ users: {}
 
 # Custom pgbouncer.ini
 settings:
-  auth_type: plain
+  auth_type: md5
   #  use when you need need to get md5 password hashes for database users, for more information please check https://www.2ndquadrant.com/en/blog/pg-phriday-securing-pgbouncer/
 
   # following is an example of db setup
@@ -108,6 +108,9 @@ clientLoginTimeout: 60
 
 # add key: value map entries to customSettings to be added to pbgouncer.ini [pgbouncer] section
 customSettings: {}
+
+# customCA: |-
+#   -----BEGIN CERTIFICATE-----
 
 # Service configuration
 service:

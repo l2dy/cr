@@ -18,7 +18,6 @@ spec:
         {{- include "pgbouncer.labels" . | nindent 8 }}
       annotations:
         checksum/ini: {{ include "pgbouncer.ini.1.0.0" . | sha256sum }}
-        checksum/users: {{ include "userlist.txt.1.0.0" . | sha256sum }}
         {{- if .Values.spec.annotations }}
         {{- /* Using toJson instead of toYaml due to https://github.com/helm/helm/issues/3470  */ -}}
         {{- tpl (toJson .Values.spec.annotations) . | fromJson | toYaml |  nindent 8 }}
@@ -71,6 +70,10 @@ spec:
             items:
               - key: pgbouncer.ini
                 path: pgbouncer.ini
+              {{- if .Values.customCA }}
+              - key: server-ca-certificates.crt
+                path: server-ca-certificates.crt
+              {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
