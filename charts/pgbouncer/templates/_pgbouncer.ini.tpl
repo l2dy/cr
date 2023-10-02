@@ -37,7 +37,7 @@ unix_socket_dir = var/run/postgresql
 ;client_tls_dheparams = auto
 ;client_tls_ecdhcurve = auto
 ;server_tls_sslmode = disable
-{{- if $root.Values.customCA }}
+{{- if .Values.customCA }}
 server_tls_ca_file = /opt/bitnami/pgbouncer/conf/server-ca-certificates.crt
 {{- else }}
 ;server_tls_ca_file = <system default>
