@@ -5,6 +5,7 @@ global:
     host: affine.pro
     tls: []
   database:
+    scheme: 'postgres'
     user: 'postgres'
     url: 'pg-postgresql'
     port: '5432'
