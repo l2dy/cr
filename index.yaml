@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  affine:
+  - apiVersion: v2
+    appVersion: 0.7.0-canary.18
+    created: "2023-10-02T01:43:33.58441584Z"
+    description: AFFiNE cloud chart
+    digest: b058bc414a770957f590bcb3ac99ee5fb7c9a3239904de101a4dabd0097ea9a9
+    name: affine
+    type: application
+    urls:
+    - https://github.com/l2dy/cr/releases/download/affine-0.0.0-alpha.0/affine-0.0.0-alpha.0.tgz
+    version: 0.0.0-alpha.0
   kubernetes-dashboard:
   - apiVersion: v2
     appVersion: v3.0.0-alpha0
@@ -37,4 +48,4 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/kubernetes-dashboard-7.0.0-alpha1.1/kubernetes-dashboard-7.0.0-alpha1.1.tgz
     version: 7.0.0-alpha1.1
-generated: "2023-09-23T19:42:42.53085499Z"
+generated: "2023-10-02T01:45:33.584423741Z"
