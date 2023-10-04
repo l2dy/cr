@@ -21,6 +21,17 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/affine-0.0.0-alpha.0/affine-0.0.0-alpha.0.tgz
     version: 0.0.0-alpha.0
+  demo:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-10-04T02:56:31.892574297Z"
+    description: A Helm chart for Kubernetes
+    digest: 9671b0c1666d538623cd6b250aeb3e0c7ce3b7482fb937a3fc4cb8c93cc9a2dd
+    name: demo
+    type: application
+    urls:
+    - https://github.com/l2dy/cr/releases/download/demo-0.1.0/demo-0.1.0.tgz
+    version: 0.1.0
   kubernetes-dashboard:
   - apiVersion: v2
     appVersion: v3.0.0-alpha0
@@ -89,4 +100,4 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/pgbouncer-1.0.16-alpha.5/pgbouncer-1.0.16-alpha.5.tgz
     version: 1.0.16-alpha.5
-generated: "2023-10-02T12:21:25.323095852Z"
+generated: "2023-10-04T02:56:31.892596897Z"
