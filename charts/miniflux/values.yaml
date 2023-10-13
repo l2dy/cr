@@ -14,8 +14,13 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+database:
+  url: ""
+
 containers:
-  env: []
+  env:
+    - name: RUN_MIGRATIONS
+      value: "1"
 
 serviceAccount:
   # Specifies whether a service account should be created
