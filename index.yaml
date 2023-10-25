@@ -21,6 +21,29 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/affine-0.0.0-alpha.0/affine-0.0.0-alpha.0.tgz
     version: 0.0.0-alpha.0
+  common:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: |-
+            Volumes did not render correctly across multiple controllers
+    apiVersion: v2
+    created: "2023-10-25T12:01:02.727922866Z"
+    description: Function library for Helm charts
+    digest: 4debd798a6cc74f4ddad21b89c24c8970c596a8ed9b66eb3b3e823d42be788e7
+    home: https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+    keywords:
+    - common
+    - library
+    kubeVersion: '>=1.22.0-0'
+    maintainers:
+    - email: me@bjw-s.dev
+      name: bjw-s
+    name: common
+    type: library
+    urls:
+    - https://github.com/l2dy/cr/releases/download/common-2.0.3/common-2.0.3.tgz
+    version: 2.0.3
   demo:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -121,4 +144,4 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/pgbouncer-1.0.16-alpha.5/pgbouncer-1.0.16-alpha.5.tgz
     version: 1.0.16-alpha.5
-generated: "2023-10-13T17:54:39.045063824Z"
+generated: "2023-10-25T12:01:02.727953968Z"
