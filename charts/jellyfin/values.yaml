@@ -1,0 +1,95 @@
+# Default values for jellyfin.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: jellyfin/jellyfin
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+  # runAsGroup: 1000
+
+service:
+  type: ClusterIP
+  port: 8096
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+persistence:
+  config:
+    enabled: true
+    path: /config
+    accessMode: ReadWriteOnce
+    size: 2Gi
+    # storageClass: "-"
+  media:
+    enabled: true
+    path: /media
+    accessMode: ReadWriteMany
+    size: 5Gi
+    # If you wish to use a hostpath, update comment out the access mode/size, and uncomment the following
+    # type: hostPath
+    # hostPath: /path/to/your/media
+    # readOnly: true
+    # If you have an existing PVC with your media:
+    # type: pvc
+    # existingClaim: myMediaClaim
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
