@@ -48,7 +48,7 @@ service:
         port: 4533
 
 ingress:
-  media:
+  main:
     enabled: false
     # className: "ingress-nginx"
     hosts:
