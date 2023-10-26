@@ -1,0 +1,76 @@
+defaultPodOptions:
+  # -- Configure the Security Context for the Pod
+  securityContext: {}
+  # runAsUser: 1000
+  # runAsGroup: 1000
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: deluan/navidrome
+          tag: "0.49.3"
+          pullPolicy: IfNotPresent
+
+        env:
+          ND_SCANSCHEDULE: 1h
+          ND_LOGLEVEL: info
+          ND_SESSIONTIMEOUT: 24h
+          ND_BASEURL: ""
+
+        probes:
+          liveness:
+            enabled: false
+          readiness:
+            enabled: false
+          startup:
+            enabled: false
+
+        # -- Set the resource requests / limits for the container.
+        resources:
+          {}
+          ## We usually recommend not to specify default resources and to leave this as a conscious
+          ## choice for the user. This also increases chances charts run on environments with little
+          ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+          ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+          # limits:
+          #   cpu: 200m
+          #   memory: 512Mi
+          # requests:
+          #   cpu: 100m
+          #   memory: 128Mi
+
+service:
+  main:
+    ports:
+      http:
+        port: 4533
+
+ingress:
+  media:
+    enabled: false
+    # className: "ingress-nginx"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            service:
+              name: main
+              port: http
+
+persistence:
+  config:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 2Gi
+    globalMounts:
+      - path: /data
+  music:
+    enabled: true
+    type: hostPath
+    hostPath: /path/to/your/music
+    globalMounts:
+      - path: /music
+        readOnly: true

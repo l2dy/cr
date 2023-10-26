@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://l2dy.github.io/cr/
+  version: 2.0.3
+digest: sha256:feacb7ca8af40a9e13a2039287b02a6daf790ca78d0b8d573d57cbf9aa046e4c
+generated: "2023-10-26T21:34:17.606348+08:00"
