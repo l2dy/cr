@@ -127,6 +127,21 @@ entries:
   navidrome:
   - apiVersion: v2
     appVersion: 0.49.3
+    created: "2023-10-26T14:05:37.601647446Z"
+    dependencies:
+    - name: common
+      repository: https://l2dy.github.io/cr/
+      version: 2.0.3
+    description: Navidrome Helm Chart
+    digest: 23ceb719342078e4cdf870035427f89c794ee5f41d3b579d939910acbfd2530d
+    icon: https://avatars.githubusercontent.com/u/26692192?s=200&v=4
+    name: navidrome
+    type: application
+    urls:
+    - https://github.com/l2dy/cr/releases/download/navidrome-0.0.6/navidrome-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 0.49.3
     created: "2023-10-26T13:56:57.389854967Z"
     dependencies:
     - name: common
@@ -171,4 +186,4 @@ entries:
     urls:
     - https://github.com/l2dy/cr/releases/download/pgbouncer-1.0.16-alpha.5/pgbouncer-1.0.16-alpha.5.tgz
     version: 1.0.16-alpha.5
-generated: "2023-10-26T13:56:57.389880968Z"
+generated: "2023-10-26T14:05:37.601829649Z"
