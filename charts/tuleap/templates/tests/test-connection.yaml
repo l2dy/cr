@@ -1,0 +1,17 @@
+{{- if .Values.tests.enabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ template "tuleap.fullname" . }}-test-connection"
+  labels:
+    {{- include "tuleap.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: {{ default "busybox" .Values.tests.image }}
+      command: ['wget']
+      args: ['{{ template "tuleap.fullname" . }}']
+  restartPolicy: Never
+{{- end -}}

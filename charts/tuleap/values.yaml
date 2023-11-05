@@ -1,0 +1,181 @@
+# Default values for tuleap.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# TODO deploymentType: "StatefulSet"
+deploymentType: "Deployment"
+
+# If the deployment Type is set to Deployment tuleap is deployed as a replica set
+# There should not be more than 1 tuleap instance connected to the same database
+replicaCount: 1
+
+# This will use the default deployment strategy unless it is overriden
+deploymentStrategy: {}
+
+image:
+  repository: tuleap/tuleap-community-edition
+  tag: latest
+  pullPolicy: IfNotPresent
+  # If using a private repository, the name of the imagePullSecret to use
+  # pullSecret: my-repo-secret
+
+auth:
+  # Password used by Tuleap application to connect to the database (default user tuleapadm). Ignored if existing secret is provided.
+  # Cf. https://docs.tuleap.org/installation-guide/docker-image.html
+  sysdbPassword: ""
+  # Password of the Tuleap site administrator application user. Ignored if existing secret is provided.
+  # Cf. https://docs.tuleap.org/installation-guide/docker-image.html
+  adminPassword: ""
+  # Use existing secret for password details. The secret has to contain the keys `tuleap-sys-db-password` and `tuleap-site-admin-password`
+  # NOTE: When it's set the auth.sysdbPassword and auth.adminPassword are ignored.
+  existingSecret: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Set security context for tuleap pod
+securityContext:
+  fsGroup: 1000
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+fqdn: tuleap.example.com
+
+service:
+  type: ClusterIP
+  labels:
+  annotations: {}
+  # May be used in example for internal load balancing in GCP:
+  # cloud.google.com/load-balancer-type: Internal
+  # loadBalancerSourceRanges:
+  #   - 0.0.0.0/0
+  # loadBalancerIP: 1.2.3.4
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: tuleap.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+mysql:
+  enabled: true
+
+redis:
+  enabled: true
+
+mailhog:
+  enabled: true
+
+startupProbe:
+  # Raw container includes a setup step.
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  failureThreshold: 24
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  failureThreshold: 6
+
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  failureThreshold: 6
+
+initContainers:
+  resources: {}
+
+## Array of extra containers to run alongside the tuleap container
+##
+## Example:
+## - name: myapp-container
+##   image: busybox
+##   command: ['sh', '-c', 'echo Hello && sleep 3600']
+##
+extraContainers: []
+
+## Environment variables to attach to the pods
+##
+# env:
+#   - name: VARIABLE
+#     value: my-value
+
+# Set annotations for pods
+annotations: {}
+
+podAnnotations: {}
+
+## We usually don't make specific ressource recommandations, as they are heavily dependend on
+## The usage of Tuleap and the surrounding infrastructure.
+## Adjust these values to your needs, but make sure that the memory limit is never under 4 GB
+resources:
+  limits:
+    cpu: 800m
+    memory: 4Gi
+  requests:
+    cpu: 400m
+    memory: 2Gi
+
+persistence:
+  enabled: true
+  ## Set annotations on pvc
+  annotations: {}
+
+  ## Specify an existing volume claim instead of creating a new one.
+  ## When using this option all following options like storageClass, accessMode and size are ignored.
+  # existingClaim:
+
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  uid: 1000
+
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
+
+# In case you want to specify different resources for emptyDir than {}
+emptyDir: {}
+  # Example of resouces that might be used:
+  # medium: Memory
+  # sizeLimit: 16Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+tests:
+  enabled: true

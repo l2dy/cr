@@ -1,0 +1,179 @@
+{{- if eq .Values.deploymentType "Deployment"}}
+#
+# https://docs.tuleap.org/installation-guide/docker-image.html#tuleap-community-edition
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "tuleap.fullname" . }}
+  labels:
+    {{- include "tuleap.labels" . | nindent 4 }}
+    app: {{ template "tuleap.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/part-of: tuleap
+    app.kubernetes.io/component: {{ template "tuleap.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tuleap.selectorLabels" . | nindent 6 }}
+{{- if .Values.deploymentStrategy }}
+  strategy:
+{{ toYaml .Values.deploymentStrategy | indent 4 }}
+{{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tuleap.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
+      serviceAccountName: {{ template "tuleap.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- if .Values.mysql.enabled }}
+        - name: wait-for-database
+          image: {{ default "busybox:1.32" .Values.initContainers.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy  }}
+          {{- if $securityContext := .Values.initContainers.securityContext }}
+          securityContext:
+{{ toYaml $securityContext | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.initContainers.resources | indent 12 }}
+          command: ["/bin/sh", "-c", 'for i in $(seq 1 200); do nc -z -w3 {{ include "mysql.hostname" . }} 3306 && exit 0 || sleep 2; done; exit 1']
+      {{- end }}
+      containers:
+      {{- if .Values.extraContainers }}
+        {{- toYaml .Values.extraContainers | nindent 8 }}
+      {{- end }}
+        - name: {{ .Chart.Name }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+{{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            # Mandatory environment variables
+            # See https://docs.tuleap.org/installation-guide/docker-image.html
+            - name: TULEAP_SYS_DBHOST
+              value: "{{ template "mysql.hostname" .}}"
+            - name: TULEAP_SYS_DBPASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "tuleap.secretName" . }}
+                  key: tuleap-sys-db-password
+            - name: SITE_ADMINISTRATOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "tuleap.secretName" . }}
+                  key: tuleap-site-admin-password
+            - name: DB_HOST
+              value: "{{ template "mysql.hostname" .}}"
+            - name: DB_ADMIN_USER
+              value: root
+            - name: DB_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "tuleap.mysql.secretName" .}}
+                  key: mysql-root-password
+            {{- with .Values.env }}
+            {{- . | toYaml | trim | nindent 12 }}
+            {{- end }}
+            - name: TULEAP_FQDN
+              value: "{{ .Values.fqdn }}"
+            {{- if .Values.smtpHost }}
+            - name: TULEAP_EMAIL_RELAYHOST
+              value: "{{ .Values.smtpHost }}:{{ default 25 .Values.smtpPort }}"
+            {{- else if .Values.mailhog.enabled }}
+            - name: TULEAP_EMAIL_RELAYHOST
+              value: "{{ template "mailhog.fullname" . }}:{{ default 25 .Values.mailhog.service.port.smtp }}"
+            {{- end }}
+          ports:
+            # Hardcoded values in the Docker
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+          volumeMounts:
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
+{{- end }}
+            - mountPath: "/data"
+              name: tuleap-data
+            - mountPath: "/usr/share/tuleap/src/etc/nginx/tuleap.conf.dist"
+              subPath: tuleap.conf.dist
+              name: nginx-tuleap-conf
+              readOnly: true
+          startupProbe:
+            exec:
+              command:
+              - /usr/bin/tuleap
+              - healthcheck
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          livenessProbe:
+            exec:
+              command:
+              - /usr/bin/tuleap
+              - healthcheck
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+{{- if .Values.persistence.volumes }}
+{{ tpl (toYaml .Values.persistence.volumes | indent 6) . }}
+{{- end }}
+        - name: tuleap-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "tuleap.fullname" . }}{{- end }}
+          {{- else }}
+          emptyDir: {{- toYaml .Values.emptyDir | nindent 12 }}
+          {{- end  }}
+        - name: nginx-tuleap-conf
+          configMap:
+            name: nginx-tuleap-conf
+            items:
+              - key: tuleap.conf.dist
+                path: tuleap.conf.dist
+{{- end }}

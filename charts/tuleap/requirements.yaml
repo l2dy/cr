@@ -1,0 +1,13 @@
+dependencies:
+- name: mysql
+  version: 8.8.15
+  repository: https://charts.bitnami.com/bitnami
+  condition: mysql.enabled
+- name: redis
+  version: 15.6.4
+  repository: https://charts.bitnami.com/bitnami
+  condition: redis.enabled
+- name: mailhog
+  version: 5.0.2
+  repository: https://codecentric.github.io/helm-charts
+  condition: mailhog.enabled
